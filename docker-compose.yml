@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  vue:
+    build: .
+    command: /bin/sh -c "npm install; npm run dev"
+    ports:
+      - 5173:5173
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
