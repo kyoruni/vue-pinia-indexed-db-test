@@ -36,8 +36,19 @@ const types = [
   'フェアリー',
 ];
 const submit = () => {
-  pokemonsStore.addPokemon(pokemon);
-  router.push({ name: 'PokemonList' });
+  const promise = pokemonsStore.addPokemon(pokemon);
+  promise.then(
+    (result: boolean) => {
+      if (result) {
+        router.push({ name: 'PokemonList' });
+      }
+    }
+  );
+  promise.catch(
+    (error) => {
+      console.log('データ登録に失敗しました', error);
+    }
+  );
 };
 </script>
 

@@ -14,6 +14,10 @@ const pokemons = computed((): Map<number, Pokemon> => {
 const isEmptyList = computed((): boolean => {
   return pokemonsStore.isPokemonsEmpty();
 });
+
+const isLoading = computed((): boolean => {
+  return pokemonsStore.isLoading;
+});
 </script>
 
 <template>
@@ -34,7 +38,10 @@ const isEmptyList = computed((): boolean => {
       <p>
         <RouterLink :to="{ name: 'PokemonAdd' }">新規登録</RouterLink>
       </p>
-      <ul>
+      <p v-if="isLoading">
+        データ取得中！
+      </p>
+      <ul v-else>
         <li v-if="isEmptyList">
           ポケモンが登録されていません
         </li>
