@@ -106,6 +106,33 @@ export const usePokemonsStore = defineStore('pokemons', () => {
     return promise;
   };
 
+  async function deletePokemon (pokemonId: number): Promise<boolean> {
+    // DBオブジェクトを取得
+    const database = await getDatabase();
+    const promise = new Promise<boolean>(
+      (resolve, reject) => {
+        // トランザクションオブジェクトを取得
+        const transaction = database.transaction('pokemons', 'readwrite');
+        // オブジェクトストアを取得
+        const objectStore = transaction.objectStore('pokemons');
+        // 削除
+        objectStore.delete(pokemonId);
+        // トランザクション成功
+        transaction.oncomplete = () => {
+          // 非同期処理が完了したので、Promiseをtrueにしておく
+          alert('削除が完了しました');
+          resolve(true);
+        };
+        // トランザクション失敗
+        transaction.onerror = (event) => {
+          console.log('ERROR: データ削除に失敗しました', event);
+          reject(new Error('ERROR: データ削除に失敗しました'));
+        };
+      }
+    );
+    return true;
+  };
+
   let _database: IDBDatabase;
   async function getDatabase (): Promise<IDBDatabase> {
     const promise = new Promise<IDBDatabase>(
@@ -138,5 +165,5 @@ export const usePokemonsStore = defineStore('pokemons', () => {
     return promise;
   };
 
-  return { pokemons, isLoading, isPokemonsEmpty, prepareList, getById, addPokemon, getDatabase };
+  return { pokemons, isLoading, isPokemonsEmpty, prepareList, getById, addPokemon, deletePokemon, getDatabase };
 });
